@@ -69,63 +69,63 @@ if prompt := st.chat_input("Ask your Revenue Agent anything..."):
                         text_parts.append(block)
                 answer = "".join(text_parts)
 
-        st.markdown(answer)
-        st.session_state.messages.append(AIMessage(content=answer))
+            st.markdown(answer)
 
-        chart_keywords = ["chart", "graph", "plot", "visualize", "visual"]
+            chart_keywords = ["chart", "graph", "plot", "visualize", "visual"]
 
-        if any(word in prompt.lower() for word in chart_keywords):
-            month_map = {
-                "jan": "January", "january": "January",
-                "feb": "February", "february": "February",
-                "mar": "March", "march": "March",
-                "apr": "April", "april": "April",
-                "may": "May",
-                "jun": "June", "june": "June",
-                "jul": "July", "july": "July",
-                "aug": "August", "august": "August",
-                "sep": "September", "sept": "September", "september": "September",
-                "oct": "October", "october": "October",
-                "nov": "November", "november": "November",
-                "dec": "December", "december": "December",
-            }
+            if any(word in prompt.lower() for word in chart_keywords):
 
-            matches = re.findall(
-                r"\b(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)\s+(\d{4})\b",
-                prompt.lower()
-            )
+                month_map = {
+                    "jan": "January", "january": "January",
+                    "feb": "February", "february": "February",
+                    "mar": "March", "march": "March",
+                    "apr": "April", "april": "April",
+                    "may": "May",
+                    "jun": "June", "june": "June",
+                    "jul": "July", "july": "July",
+                    "aug": "August", "august": "August",
+                    "sep": "September", "sept": "September", "september": "September",
+                    "oct": "October", "october": "October",
+                    "nov": "November", "november": "November",
+                    "dec": "December", "december": "December",
+                }
 
-            if len(matches) >= 2:
-                start_month = month_map[matches[0][0]]
-                start_year = matches[0][1]
-                end_month = month_map[matches[1][0]]
-                end_year = matches[1][1]
-
-                start_date = pd.to_datetime(f"{start_month} {start_year}", format="%B %Y")
-                end_date = pd.to_datetime(f"{end_month} {end_year}", format="%B %Y")
-
-                df_chart = get_revenue_by_month_df(start=start_date, end=end_date)
-                chart_title = f"📈 Revenue Trend ({start_month} {start_year} to {end_month} {end_year})"
-            else:
-                df_chart = get_revenue_by_month_df()
-                chart_title = "📈 Revenue Trend"
-
-            if not df_chart.empty:
-                fig = px.line(
-                    df_chart,
-                    x="month_label",
-                    y="total_revenue",
-                    title=chart_title,
-                    markers=True,
-                    template="plotly_dark"
+                matches = re.findall(
+                    r"\b(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)\s+(\d{4})\b",
+                    prompt.lower()
                 )
 
-                fig.update_layout(
-                    xaxis_title="Month",
-                    yaxis_title="Revenue ($)",
-                    hovermode="x unified"
-                )
+                if len(matches) >= 2:
+                    start_month = month_map[matches[0][0]]
+                    start_year = matches[0][1]
+                    end_month = month_map[matches[1][0]]
+                    end_year = matches[1][1]
 
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.warning("No data found for that date range.")
+                    start_date = pd.to_datetime(f"{start_month} {start_year}", format="%B %Y")
+                    end_date = pd.to_datetime(f"{end_month} {end_year}", format="%B %Y")
+
+                    df_chart = get_revenue_by_month_df(start=start_date, end=end_date)
+                    chart_title = f"📈 Revenue Trend ({start_month} {start_year} to {end_month} {end_year})"
+                else:
+                    df_chart = get_revenue_by_month_df()
+                    chart_title = "📈 Revenue Trend"
+
+                if not df_chart.empty:
+                    fig = px.line(
+                        df_chart,
+                        x="month_label",
+                        y="total_revenue",
+                        title=chart_title,
+                        markers=True,
+                        template="plotly_dark"
+                    )
+
+                    fig.update_layout(
+                        xaxis_title="Month",
+                        yaxis_title="Revenue ($)",
+                        hovermode="x unified"
+                    )
+
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.warning("No data found for that date range.")
