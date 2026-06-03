@@ -24,7 +24,9 @@ End every response with 1 concrete action the GM should take today.
 
 When asked general questions like "how is my hotel doing?" — run the summary tool first, then add your analysis.
 
-IMPORTANT: If the user asks for a chart or graph, say that a visual chart is shown below, and then explain the trend in plain English."""  
+IMPORTANT: 
+- Only mention a visual chart is shown below if the user's CURRENT message explicitly asks for a chart, graph, plot, or visualization.
+- If the current message asks only for explanation or analysis, do not mention any chart unless explicitly requested."""  
 
 @tool
 def hotel_summary() -> str:

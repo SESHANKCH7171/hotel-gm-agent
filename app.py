@@ -70,10 +70,18 @@ if prompt := st.chat_input("Ask your Revenue Agent anything..."):
                 answer = "".join(text_parts)
 
             st.markdown(answer)
+            st.session_state.messages.append(AIMessage(content=answer))
 
+            current_prompt = prompt.lower().strip()
             chart_keywords = ["chart", "graph", "plot", "visualize", "visual"]
+            is_chart_request = any(word in current_prompt for word in chart_keywords)
 
-            if any(word in prompt.lower() for word in chart_keywords):
+            if is_chart_request:
+                cleaned_prompt = current_prompt
+                cleaned_prompt = cleaned_prompt.replace("decmber", "december")
+                cleaned_prompt = cleaned_prompt.replace("auaguest", "august")
+                cleaned_prompt = cleaned_prompt.replace("rto", "to")
+                cleaned_prompt = cleaned_prompt.replace("sept", "sep")
 
                 month_map = {
                     "jan": "January", "january": "January",
@@ -92,7 +100,7 @@ if prompt := st.chat_input("Ask your Revenue Agent anything..."):
 
                 matches = re.findall(
                     r"\b(jan|january|feb|february|mar|march|apr|april|may|jun|june|jul|july|aug|august|sep|sept|september|oct|october|nov|november|dec|december)\s+(\d{4})\b",
-                    prompt.lower()
+                    cleaned_prompt
                 )
 
                 if len(matches) >= 2:
@@ -127,5 +135,3 @@ if prompt := st.chat_input("Ask your Revenue Agent anything..."):
                     )
 
                     st.plotly_chart(fig, use_container_width=True)
-                else:
-                    st.warning("No data found for that date range.")
