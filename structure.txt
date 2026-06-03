@@ -1,0 +1,8 @@
+hotel-gm-agent/
+├── app.py                  ← Streamlit frontend (main file)
+├── agent.py                ← LangChain agent logic
+├── data_tools.py           ← All data analysis functions
+├── hotel_bookings.csv      ← The Kaggle dataset
+├── requirements.txt        ← Dependencies
+└── .streamlit/
+    └── secrets.toml        ← Your Gemini API key (local only, NOT pushed to GitHub)
